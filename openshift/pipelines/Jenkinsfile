@@ -1,0 +1,71 @@
+node {
+  def openshiftApi = 'https://127.0.0.1:8443/'
+  def serviceName = 'helloworld-nodejs'
+  def serviceDomain = 'helloworld-nodejs'
+  def serviceRepo = 'https://github.com/davinryan/openshift-jenkins-nodejs-example.git'
+  def email_people = 'yourEmail@email.co.nz'
+
+
+  stage('1. Clean workspace') {
+      deleteDir()
+  }
+
+  stage('2. Build SNAPSHOT from master') {
+
+     try {
+            openshiftBuild(
+               apiURL: openshiftApi,
+               bldCfg: serviceName,
+               namespace: serviceDomain,
+               env: [
+                   [ name: "BUILD_TYPE", value: "SNAPSHOT" ],
+                   [ name: "BUILDER_ARGS", value: "build test --daemon" ]
+               ],
+               verbose: "true",
+               commitID: "",
+               buildName: "",
+               showBuildLogs: "true",
+               checkForTriggeredDeployments: "true",
+               waitTime: "30",
+               waitUnit: "min"
+             )
+           currentBuild.result = 'SUCCESS'
+       } catch (any) {
+           currentBuild.result = 'FAILURE'
+           throw any //rethrow exception to prevent the build from proceeding
+       } finally {
+           step([$class: 'Mailer', notifyEveryUnstableBuild: true, recipients: email_people, sendToIndividuals: true])
+       }
+  }
+
+  stage('3. Deploy SNAPSHOT to DEV') {
+         try {
+          openshiftTag(
+            apiURL: openshiftApi,
+            authToken: env.OPENSHIFT_TOKEN,
+            verbose: "true",
+            namespace: serviceDomain,
+            srcStream: serviceName,
+            srcTag: "latest",
+            destStream: serviceName,
+            destTag: "dev"
+          )
+          openshiftDeploy(
+            apiURL: openshiftApi,
+            authToken: env.OPENSHIFT_TOKEN,
+            verbose: "true",
+            namespace: serviceDomain,
+            waitTime: "30",
+            waitUnit: "min",
+            depCfg: serviceName
+          )
+           currentBuild.result = 'SUCCESS'
+       } catch (any) {
+           currentBuild.result = 'FAILURE'
+           throw any //rethrow exception to prevent the build from proceeding
+       } finally {
+           step([$class: 'Mailer', notifyEveryUnstableBuild: true, recipients: email_people, sendToIndividuals: true])
+       }
+
+  }
+}

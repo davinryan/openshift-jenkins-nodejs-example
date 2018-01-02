@@ -1,0 +1,26 @@
+{
+  "name": "helloworld-nodejs",
+  "version": "1.0.0",
+  "description": "",
+  "engines": {
+    "node": ">= 8.5"
+  },
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/davinryan/helloworld-nodejs.git"
+  },
+  "author": "Davin Ryan",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/davinryan/helloworld-nodejs/issues"
+  },
+  "homepage": "https://github.com/davinryan/helloworld-nodejs#readme",
+  "dependencies": {
+    "express": "^4.16.1"
+  }
+}

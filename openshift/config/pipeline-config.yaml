@@ -1,0 +1,37 @@
+apiVersion: v1
+kind: BuildConfig
+metadata:
+  name: helloworld-nodejs-build-pipeline
+  namespace: helloworld-nodejs
+  selfLink: /oapi/v1/namespaces/helloworld-nodejs/buildconfigs/helloworld-nodejs-build-pipeline
+  uid: d36cdd8b-a3f7-11e7-aeb3-001a4a408b47
+  resourceVersion: '144151918'
+  creationTimestamp: '2017-09-28T02:50:45Z'
+  labels:
+    name: helloworld-nodejs-build-pipeline
+  annotations:
+    pipeline.alpha.openshift.io/uses: >-
+      [{"name": "helloworld-nodejs", "namespace": "", "kind":
+      "DeploymentConfig"}]
+spec:
+  triggers:
+    - type: Generic
+      generic:
+        secret: 8e296b6a-fc94-48f5-af8a-664b4d899eff
+  runPolicy: Serial
+  source:
+    type: Git
+    git:
+      uri: 'https://github.com/davinryan/openshift-jenkins-nodejs-example.git'
+      ref: master
+  strategy:
+    type: JenkinsPipeline
+    jenkinsPipelineStrategy:
+      jenkinsfilePath: openshift/pipelines/Jenkinsfile
+  output: {}
+  resources: {}
+  postCommit: {}
+  completionDeadlineSeconds: 3600
+  nodeSelector: {}
+status:
+  lastVersion: 11
