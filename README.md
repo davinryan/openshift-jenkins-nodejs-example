@@ -10,3 +10,15 @@ https://github.com/debianmaster/Notes/wiki/How-to-push-docker-images-to-openshif
 https://docs.openshift.com/enterprise/3.1/dev_guide/builds.html
 
 https://github.com/openshift/source-to-image
+
+
+
+
+
+## Push s2i to local registry
+docker pull drya024/s2i-openshift-alpine-nodejs
+docker tag drya024/s2i-openshift-alpine-nodejs 172.30.1.1:5000/drya024/s2i-openshift-alpine-nodejs
+oc whoami -t
+docker login -p GvBbeHpqsEkC9AsHhbZ6hQ2yzk6wc5WqAAaOt5rlviM 172.30.1.1:5000
+oc new-project drya024
+docker push 172.30.1.1:5000/drya024/s2i-openshift-alpine-nodejs

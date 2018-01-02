@@ -64,7 +64,7 @@ items:
             defaultMode: 420
         containers:
         - name: openshift-jenkins-nodejs-example
-          image: openshift-jenkins-nodejs-example
+          image: 172.30.1.1:5000/myproject/openshift-jenkins-nodejs-example
           imagePullPolicy: Always
           livenessProbe:
             tcpSocket:
