@@ -21,6 +21,7 @@ items:
   metadata:
     name: openshift-jenkins-nodejs-example
   spec:
+    host: openshift-jenkins-nodejs-example
     to:
       kind: Service
       name: openshift-jenkins-nodejs-example

@@ -8,8 +8,11 @@ oc create -f config/image-stream.yaml
 # Install Build Configs
 oc create -f config/build-config.yaml
 
+# Install Routes
+oc create -f config/dev/routes.yaml
+
 # Install Deployment, Route and Service
 oc create -f config/dev/config.yaml
 
 # Install Pipeline
-oc create -f config/pipeline-config.yaml
+#oc create -f config/pipeline-config.yaml
