@@ -1,3 +1,5 @@
+brew install openshift-cli
+
 # openshift-jenkins-nodejs-example
 
 Change docker memory and cpu limits
@@ -14,13 +16,14 @@ oc edit oauthclient openshift-web-console
 
 https://www.openshift.org/download.html
 https://github.com/openshift/origin/releases
-brew install openshift-cli
+
+## Fix hostname local DNS
+https://developers.redhat.com/blog/2015/11/19/dns-your-openshift-v3-cluster/
 
 
 ## Push s2i to local registry
 docker pull drya024/s2i-openshift-alpine-nodejs
 docker tag drya024/s2i-openshift-alpine-nodejs 172.30.1.1:5000/drya024/s2i-openshift-alpine-nodejs
 oc whoami -t
-docker login -p GvBbeHpqsEkC9AsHhbZ6hQ2yzk6wc5WqAAaOt5rlviM 172.30.1.1:5000
-oc new-project drya024
+docker login -p $(oc whoami -t) 172.30.1.1:5000
 docker push 172.30.1.1:5000/drya024/s2i-openshift-alpine-nodejs
