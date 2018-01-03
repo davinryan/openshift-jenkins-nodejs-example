@@ -9,7 +9,7 @@ node {
       deleteDir()
   }
 
-  stage('2. Build SNAPSHOT from master') {
+  stage('2. Build from master') {
 
      try {
             openshiftBuild(
@@ -37,7 +37,7 @@ node {
        }
   }
 
-  stage('3. Deploy SNAPSHOT to DEV') {
+  stage('3. Deploy to DEV') {
          try {
           openshiftTag(
             apiURL: openshiftApi,
