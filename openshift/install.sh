@@ -12,3 +12,4 @@ oc create -f config/build-config.yaml
 oc create -f config/dev/config.yaml
 
 # Install Pipeline
+oc create -f config/pipeline-config.yaml

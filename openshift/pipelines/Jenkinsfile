@@ -1,8 +1,7 @@
 node {
-  def openshiftApi = 'https://127.0.0.1:8443/'
+  def openshiftApi = 'https://127.0.0.1:8443'
   def serviceName = 'openshift-jenkins-nodejs-example'
-  def serviceDomain = 'openshift-jenkins-nodejs-example'
-  def serviceRepo = 'https://github.com/davinryan/openshift-jenkins-nodejs-example.git'
+  def serviceDomain = 'myproject'
   def email_people = 'yourEmail@email.co.nz'
 
 
