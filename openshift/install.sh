@@ -64,31 +64,37 @@ if [ "$continue" == "y" ]; then
         PASSWORD='password'
     fi
 
-    # Login and select project
-    oc login -u $USER_NAME -p $PASSWORD https://127.0.0.1:8443
-    oc new-project $PROJECT_NAME
+    echo "Looking good, I'm about to configure openshift for your service $SERVICE_NAME as user '$USER_NAME' under project '$PROJECT_NAME' for environment '$ENVIRONMENT'"
+    echo "Does this look good to you?"
+    read continue;
 
-    # Install ConfigMaps
-    oc create configmap $SERVICE_NAME-$ENVIRONMENT-config -n $PROJECT_NAME --from-file config/$ENVIRONMENT/runtime-config/application.properties
+    if [ "$continue" == "y" ]; then
+        # Login and select project
+        oc login -u $USER_NAME -p $PASSWORD https://127.0.0.1:8443
+        oc new-project $PROJECT_NAME
 
-    # Install Image Streams
-    oc process -f config/image-streams.yaml -n $PROJECT_NAME -p SERVICE_NAME=$SERVICE_NAME | oc create -f - -n $PROJECT_NAME
+        # Install ConfigMaps
+        oc create configmap $SERVICE_NAME-$ENVIRONMENT-config -n $PROJECT_NAME --from-file config/$ENVIRONMENT/runtime-config/application.properties
 
-    # Install Build Configs
-    oc process -f config/builds.yaml -n $PROJECT_NAME -p SERVICE_NAME=$SERVICE_NAME | oc create -f - -n $PROJECT_NAME
+        # Install Image Streams
+        oc process -f config/image-streams.yaml -n $PROJECT_NAME -p SERVICE_NAME=$SERVICE_NAME | oc create -f - -n $PROJECT_NAME
 
-    # Install Routes
-    oc process -f config/$ENVIRONMENT/routes.yaml -n $PROJECT_NAME -p SERVICE_NAME=$SERVICE_NAME | oc create -f - -n $PROJECT_NAME
+        # Install Build Configs
+        oc process -f config/builds.yaml -n $PROJECT_NAME -p SERVICE_NAME=$SERVICE_NAME | oc create -f - -n $PROJECT_NAME
 
-    # Install Services
-    oc process -f config/$ENVIRONMENT/services.yaml -n $PROJECT_NAME -p SERVICE_NAME=$SERVICE_NAME | oc create -f - -n $PROJECT_NAME
+        # Install Routes
+        oc process -f config/$ENVIRONMENT/routes.yaml -n $PROJECT_NAME -p SERVICE_NAME=$SERVICE_NAME | oc create -f - -n $PROJECT_NAME
 
-    # Install Deploy configs
-    oc process -f config/$ENVIRONMENT/deployments.yaml -n $PROJECT_NAME -p SERVICE_NAME=$SERVICE_NAME | oc create -f - -n $PROJECT_NAME
+        # Install Services
+        oc process -f config/$ENVIRONMENT/services.yaml -n $PROJECT_NAME -p SERVICE_NAME=$SERVICE_NAME | oc create -f - -n $PROJECT_NAME
 
-    # Install Pipeline
-    oc process -f config/pipelines.yaml -n $PROJECT_NAME -p SERVICE_NAME=$SERVICE_NAME | oc create -f - -n $PROJECT_NAME
+        # Install Deploy configs
+        oc process -f config/$ENVIRONMENT/deployments.yaml -n $PROJECT_NAME -p SERVICE_NAME=$SERVICE_NAME | oc create -f - -n $PROJECT_NAME
 
-    # Start first build
-    oc start-build $SERVICE_NAME -n $PROJECT_NAME
+        # Install Pipeline
+        oc process -f config/pipelines.yaml -n $PROJECT_NAME -p SERVICE_NAME=$SERVICE_NAME | oc create -f - -n $PROJECT_NAME
+
+        # Start first build
+        oc start-build $SERVICE_NAME -n $PROJECT_NAME
+    fi
 fi

@@ -1,26 +1,37 @@
 apiVersion: v1
-kind: BuildConfig
+kind: Template
 metadata:
-  name: openshift-jenkins-nodejs-example
-spec:
-  output:
-    to:
-      kind: ImageStreamTag
-      name: openshift-jenkins-nodejs-example:latest
-  source:
-    contextDir: /
-    git:
-      ref: master
-      uri: https://github.com/davinryan/openshift-jenkins-nodejs-example.git
-    type: Git
-  strategy:
-    sourceStrategy:
-      from:
+  annotations:
+    description: ${SERVICE_NAME} build config template
+  name: ${SERVICE_NAME}-build-config-template
+parameters:
+- description: Name of the service to be deployed
+  displayName: Service Name
+  name: SERVICE_NAME
+objects:
+- apiVersion: v1
+  kind: BuildConfig
+  metadata:
+    name: ${SERVICE_NAME}
+  spec:
+    output:
+      to:
         kind: ImageStreamTag
-        name: s2i-openshift-alpine-nodejs:latest
-        namespace: drya024
-    type: Source
-  triggers:
-  - type: Generic
-    generic:
-      secret: 41ECE3B7-A787-46FB-8C7B-BB7E53D88A23
+        name: ${SERVICE_NAME}:latest
+    source:
+      contextDir: /
+      git:
+        ref: master
+        uri: https://github.com/davinryan/${SERVICE_NAME}.git
+      type: Git
+    strategy:
+      sourceStrategy:
+        from:
+          kind: ImageStreamTag
+          name: s2i-openshift-alpine-nodejs:latest
+          namespace: drya024
+      type: Source
+    triggers:
+    - type: Generic
+      generic:
+        secret: 41ECE3B7-A787-46FB-8C7B-BB7E53D88A23

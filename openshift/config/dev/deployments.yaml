@@ -1,13 +1,28 @@
 apiVersion: v1
-items:
+kind: Template
+metadata:
+  annotations:
+    description: ${SERVICE_NAME} build config template
+  name: ${SERVICE_NAME}-build-config-template
+parameters:
+- description: Name of the service
+  displayName: Service Name
+  name: SERVICE_NAME
+- description: Name of project
+  displayName: Project Name
+  name: PROJECT_NAME
+- description: Target environment
+  displayName: Environment
+  name: ENVIRONMENT
+objects:
 - apiVersion: v1
   kind: DeploymentConfig
   metadata:
-    name: openshift-jenkins-nodejs-example
+    name: ${SERVICE_NAME}
   spec:
     replicas: 1
     selector:
-      deploymentconfig: openshift-jenkins-nodejs-example
+      deploymentconfig: ${SERVICE_NAME}
     strategy:
       resources: {}
       rollingParams:
@@ -21,19 +36,19 @@ items:
       metadata:
         creationTimestamp: null
         labels:
-          deploymentconfig: openshift-jenkins-nodejs-example
+          deploymentconfig: ${SERVICE_NAME}
       spec:
         volumes:
         - name: config-volume
           configMap:
-            name: openshift-jenkins-nodejs-example-config
+            name: ${SERVICE_NAME}-${ENVIRONMENT}-config
             items:
               - key: application.properties
                 path: application.properties
             defaultMode: 420
         containers:
-        - name: openshift-jenkins-nodejs-example
-          image: 172.30.1.1:5000/myproject/openshift-jenkins-nodejs-example
+        - name: ${SERVICE_NAME}
+          image: 172.30.1.1:5000/${PROJECT_NAME}/${SERVICE_NAME}
           imagePullPolicy: Always
           livenessProbe:
             tcpSocket:
@@ -53,7 +68,7 @@ items:
             periodSeconds: 30
             successThreshold: 1
             failureThreshold: 1
-          name: openshift-jenkins-nodejs-example
+          name: ${SERVICE_NAME}
           volumeMounts:
           - name: config-volume
             mountPath: /opt/openshift/config
@@ -79,5 +94,3 @@ items:
     triggers:
     - type: ConfigChange
   status: {}
-kind: List
-metadata: {}

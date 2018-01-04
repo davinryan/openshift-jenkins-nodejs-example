@@ -1,6 +1,17 @@
 apiVersion: v1
-kind: ImageStream
+kind: Template
 metadata:
   annotations:
-    description: Keeps track of changes in the application image
-  name: openshift-jenkins-nodejs-example
+    description: ${SERVICE_NAME} image-stream config template
+  name: ${SERVICE_NAME}-image-stream-template
+parameters:
+- description: Name of the service
+  displayName: Service Name
+  name: SERVICE_NAME
+objects:
+- apiVersion: v1
+  kind: ImageStream
+  metadata:
+    annotations:
+      description: Keeps track of changes in the application image
+    name: ${SERVICE_NAME}

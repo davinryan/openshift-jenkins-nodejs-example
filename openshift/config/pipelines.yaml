@@ -1,37 +1,51 @@
 apiVersion: v1
-kind: BuildConfig
+kind: Template
 metadata:
-  name: openshift-jenkins-nodejs-example-build-pipeline
-  namespace: myproject
-  selfLink: /oapi/v1/namespaces/openshift-jenkins-nodejs-example/buildconfigs/openshift-jenkins-nodejs-example-build-pipeline
-  uid: d36cdd8b-a3f7-11e7-aeb3-001a4a408b47
-  resourceVersion: '144151918'
-  creationTimestamp: '2017-09-28T02:50:45Z'
-  labels:
-    name: openshift-jenkins-nodejs-example-build-pipeline
   annotations:
-    pipeline.alpha.openshift.io/uses: >-
-      [{"name": "openshift-jenkins-nodejs-example", "namespace": "", "kind":
-      "DeploymentConfig"}]
-spec:
-  triggers:
-    - type: Generic
-      generic:
-        secret: 8e296b6a-fc94-48f5-af8a-664b4d899eff
-  runPolicy: Serial
-  source:
-    type: Git
-    git:
-      uri: 'https://github.com/davinryan/openshift-jenkins-nodejs-example.git'
-      ref: master
-  strategy:
-    type: JenkinsPipeline
-    jenkinsPipelineStrategy:
-      jenkinsfilePath: openshift/pipelines/Jenkinsfile
-  output: {}
-  resources: {}
-  postCommit: {}
-  completionDeadlineSeconds: 3600
-  nodeSelector: {}
-status:
-  lastVersion: 11
+    description: ${SERVICE_NAME} Jenkins Pipeline config template
+  name: ${SERVICE_NAME}-Jenkins-Pipeline-template
+parameters:
+- description: Name of the service
+  displayName: Service Name
+  name: SERVICE_NAME
+- description: Name of project
+  displayName: Project Name
+  name: PROJECT_NAME
+objects:
+- apiVersion: v1
+  kind: BuildConfig
+  metadata:
+    name: ${SERVICE_NAME}-pipeline
+    namespace: ${PROJECT_NAME}
+    selfLink: /oapi/v1/namespaces/${SERVICE_NAME}/buildconfigs/${SERVICE_NAME}-pipeline
+    uid: d36cdd8b-a3f7-11e7-aeb3-001a4a408b47
+    resourceVersion: '144151918'
+    creationTimestamp: '2017-09-28T02:50:45Z'
+    labels:
+      name: ${SERVICE_NAME}-pipeline
+    annotations:
+      pipeline.alpha.openshift.io/uses: >-
+        [{"name": "${SERVICE_NAME}", "namespace": "", "kind":
+        "DeploymentConfig"}]
+  spec:
+    triggers:
+      - type: Generic
+        generic:
+          secret: 8e296b6a-fc94-48f5-af8a-664b4d899eff
+    runPolicy: Serial
+    source:
+      type: Git
+      git:
+        uri: 'https://github.com/davinryan/${SERVICE_NAME}.git'
+        ref: master
+    strategy:
+      type: JenkinsPipeline
+      jenkinsPipelineStrategy:
+        jenkinsfilePath: openshift/pipelines/Jenkinsfile
+    output: {}
+    resources: {}
+    postCommit: {}
+    completionDeadlineSeconds: 3600
+    nodeSelector: {}
+  status:
+    lastVersion: 11

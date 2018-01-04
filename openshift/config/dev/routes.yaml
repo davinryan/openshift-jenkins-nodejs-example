@@ -1,18 +1,25 @@
 apiVersion: v1
-kind: List
-metadata: {}
-items:
+kind: Template
+metadata:
+  annotations:
+    description: ${SERVICE_NAME} router config template
+  name: ${SERVICE_NAME}-router-config-template
+parameters:
+- description: Name of the service
+  displayName: Service Name
+  name: SERVICE_NAME
+objects:
 - apiVersion: v1
   kind: Route
   metadata:
-    name: openshift-jenkins-nodejs-example
+    name: ${SERVICE_NAME}
   spec:
-    host: openshift-jenkins-nodejs-example
+    host: ${SERVICE_NAME}
     to:
       kind: Service
-      name: openshift-jenkins-nodejs-example
+      name: ${SERVICE_NAME}
     port:
-      targetPort: openshift-jenkins-nodejs-example-http
+      targetPort: ${SERVICE_NAME}-http
     tls:
       termination: edge
       insecureEdgeTerminationPolicy: Redirect
