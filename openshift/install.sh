@@ -1,30 +1,94 @@
-# Login and select project
-oc login -u developer
-oc project myproject
+#!/bin/bash
 
-# Install ConfigMaps
-oc create configmap openshift-jenkins-nodejs-example-config --from-file config/dev/openshift-jenkins-nodejs-example-config/application.properties
+echo "Hi! I'll configure your new app to run nicely in openshift. To do this, I'll need to install a few things but "
+echo "I'll totally tell you what I'm doing."
+echo "If any of this freaks you out, crtl-c to cancel at any time. Can I proceed though?"
 
-# Install Image Streams
-oc create -f config/image-streams.yaml
+read continue;
 
-# Install Build Configs
-oc create -f config/builds.yaml
+echo "Now... lets make sure you have brew and oc installed. This check only works for a mac."
+echo "Type 'y' to install or 'n' to skip this step."
+echo "-> If you choose to skip this step just make sure you have oc installed. If you're unsure how to install it, don't worry"
+echo "just go here https://github.com/openshift/origin/releases !"
 
-# Install Routes
-oc create -f config/dev/routes.yaml
+read continue;
 
-# Install Services
-oc create -f config/dev/services.yaml
+if [ "$continue" == "y" ]; then
+    brew -v  >/dev/null 2>&1 || { echo >&2 "I require brew but it's not installed. I'm  installing it.";  /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)";}
+    oc help  >/dev/null 2>&1 || { echo >&2 "I require oc but it's not installed. I'll install it... (if you're on a mac.  And have brew installed..) "; brew install openshift-cli; }
 
-# Install Deploy configs
-oc create -f config/dev/deployments.yaml
+    echo "Ok, let's continue. brew & oc are both working"
+fi
 
-# Install Pipeline
-oc create -f config/pipelines.yaml
+echo "Alrighty now I'm going to install all those openshift configuration files that allow openshift to build and"
+echo "deploy your microservice. Before we continue just make sure your openshift cluster is up and running. If you're"
+echo "not sure how to do this, just type 'oc cluster up' and wait for it to start properly. "
+echo "just accept the defaults if you're not sure what to specify. Is it started, are you ready :-) ? y/n"
 
-# Start build
-oc start-build openshift-jenkins-nodejs-example
+read continue;
 
-# Start build and deploy via pipeline
-#oc start-build openshift-jenkins-nodejs-example-build-pipeline
+if [ "$continue" == "y" ]; then
+
+    echo 'Project Name: (default: myproject)'
+    read PROJECT_NAME
+
+    if [ -z "$PROJECT_NAME" ]; then
+        PROJECT_NAME='myproject'
+    fi
+
+    echo 'Service Name: (default: openshift-jenkins-nodejs-example)'
+    read SERVICE_NAME
+
+    if [ -z "$SERVICE_NAME" ]; then
+        SERVICE_NAME='openshift-jenkins-nodejs-example'
+    fi
+
+    echo 'Environment: (default: dev)'
+    read ENVIRONMENT
+
+    if [ -z "$ENVIRONMENT" ]; then
+        ENVIRONMENT='dev'
+    fi
+
+    echo 'User Name: (default: developer)'
+    read USER_NAME
+
+    if [ -z "$USER_NAME" ]; then
+        USER_NAME='developer'
+    fi
+
+    echo 'Password: (default: password)'
+    read -s PASSWORD
+
+    if [ -z "$PASSWORD" ]; then
+        PASSWORD='password'
+    fi
+
+    # Login and select project
+    oc login -u $USER_NAME -p $PASSWORD https://127.0.0.1:8443
+    oc new-project $PROJECT_NAME
+
+    # Install ConfigMaps
+    oc create configmap $SERVICE_NAME-$ENVIRONMENT-config -n $PROJECT_NAME --from-file config/$ENVIRONMENT/runtime-config/application.properties
+
+    # Install Image Streams
+    oc process -f config/image-streams.yaml -n $PROJECT_NAME -p SERVICE_NAME=$SERVICE_NAME | oc create -f - -n $PROJECT_NAME
+
+    # Install Build Configs
+    oc process -f config/builds.yaml -n $PROJECT_NAME -p SERVICE_NAME=$SERVICE_NAME | oc create -f - -n $PROJECT_NAME
+
+    # Install Routes
+    oc process -f config/$ENVIRONMENT/routes.yaml -n $PROJECT_NAME -p SERVICE_NAME=$SERVICE_NAME | oc create -f - -n $PROJECT_NAME
+
+    # Install Services
+    oc process -f config/$ENVIRONMENT/services.yaml -n $PROJECT_NAME -p SERVICE_NAME=$SERVICE_NAME | oc create -f - -n $PROJECT_NAME
+
+    # Install Deploy configs
+    oc process -f config/$ENVIRONMENT/deployments.yaml -n $PROJECT_NAME -p SERVICE_NAME=$SERVICE_NAME | oc create -f - -n $PROJECT_NAME
+
+    # Install Pipeline
+    oc process -f config/pipelines.yaml -n $PROJECT_NAME -p SERVICE_NAME=$SERVICE_NAME | oc create -f - -n $PROJECT_NAME
+
+    # Start first build
+    oc start-build $SERVICE_NAME -n $PROJECT_NAME
+fi
