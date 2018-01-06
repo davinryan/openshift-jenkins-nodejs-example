@@ -2,7 +2,7 @@
 
 echo "Hi! I'll configure your new app to run nicely in openshift. To do this, I'll need to install a few things but "
 echo "I'll totally tell you what I'm doing."
-echo "If any of this freaks you out, crtl-c to cancel at any time. Can I proceed though?"
+echo "If any of this freaks you out, crtl-c to cancel at any time. Can I proceed though y/n?"
 
 read continue;
 
@@ -72,7 +72,7 @@ if [ "$continue" == "y" ]; then
     fi
 
     echo "Looking good, I'm about to configure openshift for your service $SERVICE_NAME as user '$USER_NAME' under project '$PROJECT_NAME' for environment '$ENVIRONMENT'"
-    echo "Does this look good to you?"
+    echo "Does this look good to you y/n?"
     read continue;
 
     if [ "$continue" == "y" ]; then
@@ -96,7 +96,7 @@ if [ "$continue" == "y" ]; then
         oc process -f config/$ENVIRONMENT/services.yaml -n $PROJECT_NAME -p SERVICE_NAME=$SERVICE_NAME | oc create -f - -n $PROJECT_NAME
 
         # Install Deploy configs
-        oc process -f config/$ENVIRONMENT/deployments.yaml -n $PROJECT_NAME -p SERVICE_NAME=$SERVICE_NAME | oc create -f - -n $PROJECT_NAME
+        oc process -f config/$ENVIRONMENT/deployments.yaml -n $PROJECT_NAME -p PROJECT_NAME=$PROJECT_NAME -p SERVICE_NAME=$SERVICE_NAME -p ENVIRONMENT=$ENVIRONMENT | oc create -f - -n $PROJECT_NAME
 
         # Install Pipeline
         oc process -f config/pipelines.yaml -n $PROJECT_NAME -p SERVICE_NAME=$SERVICE_NAME | oc create -f - -n $PROJECT_NAME

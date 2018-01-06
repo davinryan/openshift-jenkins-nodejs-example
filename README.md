@@ -31,6 +31,9 @@ cd openshift
 chmod +x install.sh
 ./install.sh
 
+ignore "Error from server (AlreadyExists): project.project.openshift.io "myproject" already exists"
+as myproject is always created by default. I'm just too lazy to make my script hide acceptable errors
+
 check configurations by navigating to https://127.0.0.1:8443
 login as developer and any password
 
