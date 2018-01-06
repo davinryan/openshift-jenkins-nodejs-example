@@ -28,7 +28,7 @@ docker push 172.30.1.1:5000/drya024/s2i-openshift-alpine-nodejs
 
 ## Install configurations
 cd openshift
-chmod a+x install.sh
+chmod +x install.sh
 ./install.sh
 
 check configurations by navigating to https://127.0.0.1:8443

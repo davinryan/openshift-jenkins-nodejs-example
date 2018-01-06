@@ -8,6 +8,9 @@ parameters:
 - description: Name of the service to be deployed
   displayName: Service Name
   name: SERVICE_NAME
+- description: Git repository where service is stored
+  displayName: GIT Service URL
+  name: SERVICE_GIT_URL
 objects:
 - apiVersion: v1
   kind: BuildConfig
@@ -22,7 +25,7 @@ objects:
       contextDir: /
       git:
         ref: master
-        uri: https://github.com/davinryan/${SERVICE_NAME}.git
+        uri: ${SERVICE_GIT_URL}
       type: Git
     strategy:
       sourceStrategy:

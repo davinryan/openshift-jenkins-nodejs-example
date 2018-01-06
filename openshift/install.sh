@@ -43,6 +43,13 @@ if [ "$continue" == "y" ]; then
         SERVICE_NAME='openshift-jenkins-nodejs-example'
     fi
 
+    echo 'Service Git Url: (default: https://github.com/davinryan/openshift-jenkins-nodejs-example.git)'
+    read SERVICE_GIT_URL
+
+    if [ -z "$SERVICE_GIT_URL" ]; then
+        SERVICE_GIT_URL='https://github.com/davinryan/openshift-jenkins-nodejs-example.git'
+    fi
+
     echo 'Environment: (default: dev)'
     read ENVIRONMENT
 
@@ -80,7 +87,7 @@ if [ "$continue" == "y" ]; then
         oc process -f config/image-streams.yaml -n $PROJECT_NAME -p SERVICE_NAME=$SERVICE_NAME | oc create -f - -n $PROJECT_NAME
 
         # Install Build Configs
-        oc process -f config/builds.yaml -n $PROJECT_NAME -p SERVICE_NAME=$SERVICE_NAME | oc create -f - -n $PROJECT_NAME
+        oc process -f config/builds.yaml -n $PROJECT_NAME -p SERVICE_NAME=$SERVICE_NAME -p SERVICE_GIT_URL=$SERVICE_GIT_URL | oc create -f - -n $PROJECT_NAME
 
         # Install Routes
         oc process -f config/$ENVIRONMENT/routes.yaml -n $PROJECT_NAME -p SERVICE_NAME=$SERVICE_NAME | oc create -f - -n $PROJECT_NAME
