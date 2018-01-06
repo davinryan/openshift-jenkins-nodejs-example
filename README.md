@@ -1,4 +1,5 @@
 ## Install/Setup
+install docker
 brew install openshift-cli
 or 
 https://www.openshift.org/download.html

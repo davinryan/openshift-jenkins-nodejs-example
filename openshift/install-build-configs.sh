@@ -6,8 +6,7 @@ echo "If any of this freaks you out, crtl-c to cancel at any time. Can I proceed
 
 read continue;
 
-echo "Now... lets make sure you have brew and oc installed. This check only works for a mac."
-echo "Type 'y' to install or 'n' to skip this step."
+echo "Now... would you like to check that brew and oc installed (This check only works for a mac by the way) y/n?"
 echo "-> If you choose to skip this step just make sure you have oc installed. If you're unsure how to install it, don't worry"
 echo "just go here https://github.com/openshift/origin/releases !"
 
@@ -20,10 +19,11 @@ if [ "$continue" == "y" ]; then
     echo "Ok, let's continue. brew & oc are both working"
 fi
 
-echo "Alrighty now I'm going to install all those openshift configuration files that allow openshift to build and"
-echo "deploy your microservice. Before we continue just make sure your openshift cluster is up and running. If you're"
-echo "not sure how to do this, just type 'oc cluster up' and wait for it to start properly. "
-echo "just accept the defaults if you're not sure what to specify. Is it started, are you ready :-) ? y/n"
+echo "Alrighty now I'm going to install all those openshift build configs"
+echo "...Before we continue please make sure your openshift cluster is up and running."
+echo "If you're not sure how to do this, just type 'oc cluster up' and wait for it to start properly before continuing."
+echo "You're about to asked a bunch of questions about your deployemnt, just accept the defaults if you're not sure."
+echo "Are you read to continue? y/n"
 
 read continue;
 
@@ -88,18 +88,6 @@ if [ "$continue" == "y" ]; then
 
         # Install Build Configs
         oc process -f config/builds.yaml -n $PROJECT_NAME -p SERVICE_NAME=$SERVICE_NAME -p SERVICE_GIT_URL=$SERVICE_GIT_URL | oc create -f - -n $PROJECT_NAME
-
-        # Install Routes
-        oc process -f config/$ENVIRONMENT/routes.yaml -n $PROJECT_NAME -p SERVICE_NAME=$SERVICE_NAME | oc create -f - -n $PROJECT_NAME
-
-        # Install Services
-        oc process -f config/$ENVIRONMENT/services.yaml -n $PROJECT_NAME -p SERVICE_NAME=$SERVICE_NAME | oc create -f - -n $PROJECT_NAME
-
-        # Install Deploy configs
-        oc process -f config/$ENVIRONMENT/deployments.yaml -n $PROJECT_NAME -p PROJECT_NAME=$PROJECT_NAME -p SERVICE_NAME=$SERVICE_NAME -p ENVIRONMENT=$ENVIRONMENT | oc create -f - -n $PROJECT_NAME
-
-        # Install Pipeline
-        oc process -f config/pipelines.yaml -n $PROJECT_NAME -p SERVICE_NAME=$SERVICE_NAME | oc create -f - -n $PROJECT_NAME
 
         # Start first build
         oc start-build $SERVICE_NAME -n $PROJECT_NAME
