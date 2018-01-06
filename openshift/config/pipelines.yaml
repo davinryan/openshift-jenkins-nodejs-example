@@ -41,7 +41,7 @@ objects:
     strategy:
       type: JenkinsPipeline
       jenkinsPipelineStrategy:
-        jenkinsfilePath: openshift/pipelines/Jenkinsfile
+        jenkinsfilePath: openshift/config/Jenkinsfile
     output: {}
     resources: {}
     postCommit: {}
