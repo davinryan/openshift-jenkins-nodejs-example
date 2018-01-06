@@ -63,13 +63,7 @@ if [ "$continue" == "y" ]; then
         oc login -u $USER_NAME -p $PASSWORD https://127.0.0.1:8443
         oc new-project $PROJECT_NAME
 
-        # Install Routes
-        oc process -f config/$ENVIRONMENT/routes.yaml -n $PROJECT_NAME -p SERVICE_NAME=$SERVICE_NAME | oc create -f - -n $PROJECT_NAME
-
-        # Install Services
-        oc process -f config/$ENVIRONMENT/services.yaml -n $PROJECT_NAME -p SERVICE_NAME=$SERVICE_NAME | oc create -f - -n $PROJECT_NAME
-
-        # Install Deploy configs
-        oc process -f config/$ENVIRONMENT/deployments.yaml -n $PROJECT_NAME -p PROJECT_NAME=$PROJECT_NAME -p SERVICE_NAME=$SERVICE_NAME -p ENVIRONMENT=$ENVIRONMENT | oc create -f - -n $PROJECT_NAME
+        # Install Pipeline
+        oc process -f config/pipelines.yaml -n $PROJECT_NAME -p SERVICE_NAME=$SERVICE_NAME | oc create -f - -n $PROJECT_NAME
     fi
 fi
