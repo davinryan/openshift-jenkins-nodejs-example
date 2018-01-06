@@ -1,25 +1,8 @@
 #!/bin/bash
 
-echo "Hi! I'll configure your new app to run nicely in openshift. To do this, I'll need to install a few things but "
-echo "I'll totally tell you what I'm doing."
-echo "If any of this freaks you out, crtl-c to cancel at any time. Can I proceed though y/n?"
+source ./install-dependencies.sh
 
-read continue;
-
-echo "Now... would you like to check that brew and oc installed (This check only works for a mac by the way) y/n?"
-echo "-> If you choose to skip this step just make sure you have oc installed. If you're unsure how to install it, don't worry"
-echo "just go here https://github.com/openshift/origin/releases !"
-
-read continue;
-
-if [ "$continue" == "y" ]; then
-    brew -v  >/dev/null 2>&1 || { echo >&2 "I require brew but it's not installed. I'm  installing it.";  /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)";}
-    oc help  >/dev/null 2>&1 || { echo >&2 "I require oc but it's not installed. I'll install it... (if you're on a mac.  And have brew installed..) "; brew install openshift-cli; }
-
-    echo "Ok, let's continue. brew & oc are both working"
-fi
-
-echo "Alrighty now I'm going to install all those openshift deploy configs"
+echo "Alrighty now I'm going to install all those openshift configs"
 echo "...Before we continue please make sure your openshift cluster is up and running."
 echo "If you're not sure how to do this, just type 'oc cluster up' and wait for it to start properly before continuing."
 echo "You're about to asked a bunch of questions about your deployemnt, just accept the defaults if you're not sure."
