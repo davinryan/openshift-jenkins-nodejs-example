@@ -29,6 +29,11 @@ objects:
       type: Git
     strategy:
       sourceStrategy:
+        env:
+          - name: GIT_SSL_NO_VERIFY
+            value: 'true'
+          - name: NODE_TLS_REJECT_UNAUTHORIZED
+            value: '0'
         from:
           kind: ImageStreamTag
           name: s2i-openshift-alpine-nodejs:latest
