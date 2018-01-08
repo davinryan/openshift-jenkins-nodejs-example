@@ -63,6 +63,9 @@ if [ "$continue" == "y" ]; then
         oc login -u $USER_NAME -p $PASSWORD https://127.0.0.1:8443
         oc new-project $PROJECT_NAME
 
+        # Install ConfigMaps
+        oc create configmap $SERVICE_NAME-$ENVIRONMENT-config -n $PROJECT_NAME --from-file config/$ENVIRONMENT/runtime-config/application.properties
+
         # Install Routes
         oc process -f config/$ENVIRONMENT/routes.yaml -n $PROJECT_NAME -p SERVICE_NAME=$SERVICE_NAME | oc create -f - -n $PROJECT_NAME
 
