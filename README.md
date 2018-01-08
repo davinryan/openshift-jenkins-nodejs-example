@@ -33,12 +33,16 @@ oc cluster up
 ## 5. Push s2i builder to local openshift registry
 docker pull drya024/s2i-openshift-alpine-nodejs
 docker tag drya024/s2i-openshift-alpine-nodejs 172.30.1.1:5000/drya024/s2i-openshift-alpine-nodejs
+
 oc login -u developer
 oc new-project drya024
+oc project drya024
 docker login -u developer -p $(oc whoami -t) 172.30.1.1:5000
 docker push 172.30.1.1:5000/drya024/s2i-openshift-alpine-nodejs
 
 ## 6. Install build configurations
+Talk about GIT_SSL_NO_VERIFY and proxy config
+
 cd openshift
 chmod +x install-build-configs.sh
 ./install-build-configs.sh
