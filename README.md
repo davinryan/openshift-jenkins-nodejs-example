@@ -44,7 +44,6 @@ docker push 172.30.1.1:5000/drya024/s2i-openshift-alpine-nodejs
 Talk about GIT_SSL_NO_VERIFY and proxy config
 
 cd openshift
-chmod +x install-build-configs.sh
 ./install-build-configs.sh
 
 ignore "Error from server (AlreadyExists): project.project.openshift.io "myproject" already exists"
@@ -54,7 +53,6 @@ check configurations by navigating to https://127.0.0.1:8443, login as developer
 
 ## 7. Install deploy configurations
 cd openshift
-chmod +x install-deploy-configs.sh
 ./install-deploy-configs.sh
 
 ignore "Error from server (AlreadyExists): project.project.openshift.io "myproject" already exists"
@@ -64,7 +62,6 @@ check configurations by navigating to https://127.0.0.1:8443, login as developer
 
 ## 8. Install pipeline configurations
 cd openshift
-chmod +x install-pipeline-configs.sh
 ./install-pipeline-configs.sh
 
 ignore "Error from server (AlreadyExists): project.project.openshift.io "myproject" already exists"
