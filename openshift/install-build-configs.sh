@@ -1,7 +1,5 @@
 #!/bin/bash
 
-source ./install-dependencies.sh
-
 echo "Alrighty now I'm going to install all those openshift configs"
 echo "...Before we continue please make sure your openshift cluster is up and running."
 echo "If you're not sure how to do this, just type 'oc cluster up' and wait for it to start properly before continuing."
