@@ -66,11 +66,11 @@ if [ "$continue" == "y" ]; then
         # Install ConfigMaps
         oc create configmap $SERVICE_NAME-$ENVIRONMENT-config -n $PROJECT_NAME --from-file config/$ENVIRONMENT/runtime-config/application.properties
 
-        # Install Routes
-        oc process -f config/$ENVIRONMENT/routes.yaml -n $PROJECT_NAME -p SERVICE_NAME=$SERVICE_NAME | oc create -f - -n $PROJECT_NAME
-
         # Install Services
         oc process -f config/$ENVIRONMENT/services.yaml -n $PROJECT_NAME -p SERVICE_NAME=$SERVICE_NAME | oc create -f - -n $PROJECT_NAME
+
+        # Install Routes
+        oc process -f config/$ENVIRONMENT/routes.yaml -n $PROJECT_NAME -p SERVICE_NAME=$SERVICE_NAME | oc create -f - -n $PROJECT_NAME
 
         # Install Deploy configs
         oc process -f config/$ENVIRONMENT/deployments.yaml -n $PROJECT_NAME -p PROJECT_NAME=$PROJECT_NAME -p SERVICE_NAME=$SERVICE_NAME -p ENVIRONMENT=$ENVIRONMENT | oc create -f - -n $PROJECT_NAME
