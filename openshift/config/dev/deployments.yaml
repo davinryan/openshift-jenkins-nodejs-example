@@ -48,7 +48,7 @@ objects:
             defaultMode: 420
         containers:
         - name: ${SERVICE_NAME}
-          image: 172.30.1.1:5000/${PROJECT_NAME}/${SERVICE_NAME}
+          image: ${SERVICE_NAME}
           imagePullPolicy: Always
           livenessProbe:
             tcpSocket:
