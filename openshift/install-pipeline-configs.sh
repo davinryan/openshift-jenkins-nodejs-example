@@ -62,6 +62,6 @@ if [ "$continue" == "y" ]; then
         oc new-project $PROJECT_NAME
 
         # Install Pipeline
-        oc process -f config/pipelines.yaml -n $PROJECT_NAME -p SERVICE_NAME=$SERVICE_NAME | oc create -f - -n $PROJECT_NAME
+        oc process -f config/pipelines.yaml -n $PROJECT_NAME -p SERVICE_NAME=$SERVICE_NAME -p SERVICE_GIT_URL=$SERVICE_GIT_URL | oc create -f - -n $PROJECT_NAME
     fi
 fi

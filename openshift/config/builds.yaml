@@ -39,7 +39,3 @@ objects:
           name: s2i-openshift-alpine-nodejs:latest
           namespace: drya024
       type: Source
-    triggers:
-    - type: Generic
-      generic:
-        secret: 41ECE3B7-A787-46FB-8C7B-BB7E53D88A23
